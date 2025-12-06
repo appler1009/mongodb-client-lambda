@@ -2,6 +2,9 @@
   "name": "mongodb-client-query-helper-lambda-proxy",
   "version": "1.0.0",
   "type": "commonjs",
+  "engines": {
+    "node": ">=24.0.0"
+  },
   "dependencies": {
     "aws-sdk": "^2.1530.0"
   }

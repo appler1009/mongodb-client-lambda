@@ -39,7 +39,7 @@ Resources:
     Type: AWS::Lambda::Function
     Properties:
       FunctionName: !Ref FunctionName
-      Runtime: nodejs18.x
+      Runtime: nodejs24.x
       Handler: index.handler
       Code:
         ZipFile: |
