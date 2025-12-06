@@ -58,16 +58,21 @@ Resources:
   FunctionUrl:
     Type: AWS::Lambda::Url
     Properties:
-      FunctionName: !Ref LambdaFunction
+      TargetFunctionArn: !GetAtt LambdaFunction.Arn
       AuthType: NONE
       Cors:
         AllowCredentials: false
         AllowHeaders:
-          - '*'
+          - Content-Type
         AllowMethods:
-          - '*'
+          - GET
+          - POST
+          - DELETE
         AllowOrigins:
           - '*'
+        MaxAge: 86400
+
+
 
   FunctionUrlPermission:
     Type: AWS::Lambda::Permission
@@ -75,6 +80,20 @@ Resources:
       FunctionName: !Ref LambdaFunction
       Action: lambda:InvokeFunctionUrl
       Principal: '*'
+      FunctionUrlAuthType: NONE
+
+  LambdaFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref LambdaFunction
+      Action: lambda:InvokeFunction
+      Principal: '*'
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/lambda/${LambdaFunction}
+      RetentionInDays: 30
 
 Outputs:
   FunctionName:
