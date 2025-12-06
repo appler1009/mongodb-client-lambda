@@ -4,7 +4,7 @@ Description: 'CloudFormation template for MongoDB Client Lambda Proxy'
 Parameters:
   FunctionName:
     Type: String
-    Default: MongoDBClientQueryHelper
+    Default: mongodb-client-query-helper
     Description: Name of the Lambda function
 
   SecretName:
@@ -55,26 +55,23 @@ Resources:
         Variables:
           SECRET_NAME: !Ref SecretName
 
-  FunctionUrl:
+
+
+  LambdaFunctionUrl:
     Type: AWS::Lambda::Url
     Properties:
       TargetFunctionArn: !GetAtt LambdaFunction.Arn
       AuthType: NONE
       Cors:
-        AllowCredentials: false
         AllowHeaders:
           - Content-Type
         AllowMethods:
           - GET
           - POST
-          - DELETE
         AllowOrigins:
           - '*'
-        MaxAge: 86400
 
-
-
-  FunctionUrlPermission:
+  LambdaFunctionUrlPermission:
     Type: AWS::Lambda::Permission
     Properties:
       FunctionName: !Ref LambdaFunction
@@ -104,6 +101,6 @@ Outputs:
 
   FunctionUrl:
     Description: URL of the Lambda function
-    Value: !GetAtt FunctionUrl.FunctionUrl
+    Value: !GetAtt LambdaFunctionUrl.FunctionUrl
     Export:
       Name: !Sub '${AWS::StackName}-FunctionUrl'

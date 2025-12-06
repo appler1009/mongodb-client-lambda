@@ -36,4 +36,4 @@ jobs:
       run: aws cloudformation deploy --template-file template.yml --stack-name mongodb-client-lambda-stack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
 
     - name: Deploy to AWS Lambda
-      run: aws lambda update-function-code --function-name MongoDBClientQueryHelper --zip-file fileb://lambda-function.zip
+      run: aws lambda update-function-code --function-name mongodb-client-query-helper --zip-file fileb://lambda-function.zip
