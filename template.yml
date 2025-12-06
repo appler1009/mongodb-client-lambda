@@ -75,7 +75,6 @@ Resources:
       FunctionName: !Ref LambdaFunction
       Action: lambda:InvokeFunctionUrl
       Principal: '*'
-      FunctionUrlAuthType: NONE
 
 Outputs:
   FunctionName:
