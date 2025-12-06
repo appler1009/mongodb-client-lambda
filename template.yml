@@ -2,10 +2,18 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'CloudFormation template for MongoDB Client Lambda Proxy'
 
 Parameters:
+  Environment:
+    Type: String
+    Default: dev
+    AllowedValues:
+      - dev
+      - prod
+    Description: Deployment environment (dev or prod)
+
   FunctionName:
     Type: String
     Default: mongodb-client-query-helper
-    Description: Name of the Lambda function
+    Description: Base name of the Lambda function
 
   SecretName:
     Type: String
@@ -16,7 +24,7 @@ Resources:
   LambdaExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub '${FunctionName}-ExecutionRole'
+      RoleName: !Sub '${FunctionName}-${Environment}-ExecutionRole'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -38,7 +46,7 @@ Resources:
   LambdaFunction:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Ref FunctionName
+      FunctionName: !Sub '${FunctionName}-${Environment}'
       Runtime: nodejs24.x
       Handler: index.handler
       Code:
@@ -54,6 +62,7 @@ Resources:
       Environment:
         Variables:
           SECRET_NAME: !Ref SecretName
+          ENVIRONMENT: !Ref Environment
 
 
 
@@ -104,3 +113,9 @@ Outputs:
     Value: !GetAtt LambdaFunctionUrl.FunctionUrl
     Export:
       Name: !Sub '${AWS::StackName}-FunctionUrl'
+
+  Environment:
+    Description: Deployment environment
+    Value: !Ref Environment
+    Export:
+      Name: !Sub '${AWS::StackName}-Environment'

@@ -32,8 +32,25 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Set environment variables
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "STACK_NAME=mongodb-client-lambda-stack-prod" >> $GITHUB_ENV
+          echo "FUNCTION_NAME=mongodb-client-query-helper-prod" >> $GITHUB_ENV
+          echo "ENVIRONMENT=prod" >> $GITHUB_ENV
+        else
+          echo "STACK_NAME=mongodb-client-lambda-stack-dev" >> $GITHUB_ENV
+          echo "FUNCTION_NAME=mongodb-client-query-helper-dev" >> $GITHUB_ENV
+          echo "ENVIRONMENT=dev" >> $GITHUB_ENV
+        fi
+
     - name: Deploy CloudFormation stack
-      run: aws cloudformation deploy --template-file template.yml --stack-name mongodb-client-lambda-stack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
+      run: |
+        aws cloudformation deploy \
+          --template-file template.yml \
+          --stack-name ${{ env.STACK_NAME }} \
+          --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
+          --parameter-overrides Environment=${{ env.ENVIRONMENT }}
 
     - name: Deploy to AWS Lambda
-      run: aws lambda update-function-code --function-name mongodb-client-query-helper --zip-file fileb://lambda-function.zip
+      run: aws lambda update-function-code --function-name ${{ env.FUNCTION_NAME }} --zip-file fileb://lambda-function.zip
