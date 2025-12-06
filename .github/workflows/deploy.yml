@@ -31,5 +31,8 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ secrets.AWS_REGION }}
 
+    - name: Deploy CloudFormation stack
+      run: aws cloudformation deploy --template-file template.yml --stack-name mongodb-client-lambda-stack --capabilities CAPABILITY_IAM
+
     - name: Deploy to AWS Lambda
       run: aws lambda update-function-code --function-name MongoDBClientQueryHelper --zip-file fileb://lambda-function.zip
